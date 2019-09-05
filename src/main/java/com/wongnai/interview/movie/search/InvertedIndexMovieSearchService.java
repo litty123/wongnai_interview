@@ -1,5 +1,6 @@
 package com.wongnai.interview.movie.search;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 		// from inverted index for Star and for War so that you get movie ids 1,5,8 for Star and 2,5 for War. The result that
 		// you have to return can be union or intersection of those 2 sets of ids.
 		// By the way, in this assignment, you must use intersection so that it left for just movie id 5.
-
+		List<String> words= Arrays.asList(queryText.split(" "));
 		return null;
 	}
 }
