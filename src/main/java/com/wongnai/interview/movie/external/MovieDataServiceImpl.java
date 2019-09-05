@@ -47,8 +47,6 @@ public class MovieDataServiceImpl implements MovieDataService {
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
 				JSONArray a = (JSONArray) parser.parse(inputLine);
-//				System.out.println(a);
-				System.out.println("1");
 				// Loop through each item
 				for (Object o : a) {
 

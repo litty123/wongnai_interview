@@ -16,6 +16,10 @@ public class Movie {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	private String name;
 
 	@ElementCollection(fetch = FetchType.EAGER)
@@ -37,6 +41,10 @@ public class Movie {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setActors(List<String> actors) {
+		this.actors = actors;
 	}
 
 	public void setName(String name) {
