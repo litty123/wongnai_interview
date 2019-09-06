@@ -30,12 +30,18 @@ public class MovieDataSynchronizer {
 	public void forceSync() {
 		//TODO: implement this to sync movie into repository
 		MoviesResponse allData=movieDataService.fetchAll();
+
+		//to make sure there will be no duplicate
+		invertedMovieIndexRepository.deleteAll();
+		movieRepository.deleteAll();
+
         InvertedMovieIndex invertedMovieIndex=new InvertedMovieIndex();
 
 		HashMap<String,Set<Long>> temp=new HashMap<>();
 		for(MovieData i:allData){
 			Movie movie=new Movie(i.getTitle());
 			movie.setActors(i.getCast());
+
 
 			movieRepository.save(movie);
 
@@ -56,7 +62,7 @@ public class MovieDataSynchronizer {
 					temp.put(word, value);
 				}
 			}
-			System.out.println("");
+
 		}
 
 
@@ -67,6 +73,9 @@ public class MovieDataSynchronizer {
 			Set<Long> value = entry.getValue();
 			temp2.setKey(key);
 			temp2.setIndex(value);
+
+
+
 			invertedMovieIndexRepository.save(temp2);
 
 		}

@@ -58,7 +58,6 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 				}
 			}
 
-			System.out.println("");
 
 		}
 		List<Movie> result=new ArrayList<>();
