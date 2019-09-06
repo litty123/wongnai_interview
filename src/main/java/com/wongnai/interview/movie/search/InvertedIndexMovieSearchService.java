@@ -1,21 +1,21 @@
 package com.wongnai.interview.movie.search;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+
+import com.wongnai.interview.movie.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
-
-import com.wongnai.interview.movie.Movie;
-import com.wongnai.interview.movie.MovieRepository;
-import com.wongnai.interview.movie.MovieSearchService;
 
 @Component("invertedIndexMovieSearchService")
 @DependsOn("movieDatabaseInitializer")
 public class InvertedIndexMovieSearchService implements MovieSearchService {
 	@Autowired
 	private MovieRepository movieRepository;
+
+	@Autowired
+    private InvertedMovieIndexRepository invertedMovieIndexRepository;
 
 	@Override
 	public List<Movie> search(String queryText) {
@@ -36,6 +36,37 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 		// you have to return can be union or intersection of those 2 sets of ids.
 		// By the way, in this assignment, you must use intersection so that it left for just movie id 5.
 		List<String> words= Arrays.asList(queryText.split(" "));
-		return null;
+		Set<Long> index=new HashSet<>();
+		int count=0;
+		for(String word:words){
+			InvertedMovieIndex invertedMovieIndex=invertedMovieIndexRepository.findByKey(word);
+			if(count==0){
+				try {
+					index = invertedMovieIndex.getIndex();
+				}
+				catch (Exception e){
+
+				}
+				count++;
+			}
+			else{
+				try {
+					index.retainAll(invertedMovieIndex.getIndex());
+				}
+				catch(Exception e ){
+
+				}
+			}
+
+			System.out.println("");
+
+		}
+		List<Movie> result=new ArrayList<>();
+		for(Long i:index){
+			Optional<Movie> m=movieRepository.findById(i);
+			result.add(m.orElse(null));
+		}
+
+		return result;
 	}
 }
