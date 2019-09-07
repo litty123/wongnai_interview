@@ -38,16 +38,22 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 		List<String> words= Arrays.asList(queryText.split(" "));
 		Set<Long> index=new HashSet<>();
 		int count=0;
+
+		//find intersection of all Index from query words
 		for(String word:words){
 			InvertedMovieIndex invertedMovieIndex=invertedMovieIndexRepository.findByKey(word);
+
+			//for first word with data, copy the index
+			//else intersect result
 			if(count==0){
 				try {
 					index = invertedMovieIndex.getIndex();
+					count++;
 				}
 				catch (Exception e){
 
 				}
-				count++;
+
 			}
 			else{
 				try {
@@ -60,6 +66,8 @@ public class InvertedIndexMovieSearchService implements MovieSearchService {
 
 
 		}
+
+		//get movie name from index result
 		List<Movie> result=new ArrayList<>();
 		for(Long i:index){
 			Optional<Movie> m=movieRepository.findById(i);

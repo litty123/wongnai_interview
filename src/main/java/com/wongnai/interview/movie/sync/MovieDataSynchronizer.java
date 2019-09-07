@@ -37,46 +37,47 @@ public class MovieDataSynchronizer {
 
         InvertedMovieIndex invertedMovieIndex=new InvertedMovieIndex();
 
-		HashMap<String,Set<Long>> temp=new HashMap<>();
+		HashMap<String,Set<Long>> tempInvertedIndex=new HashMap<>();
 		for(MovieData i:allData){
+
+		    //save all movie from MovieResponse into movieRepository
 			Movie movie=new Movie(i.getTitle());
 			movie.setActors(i.getCast());
-
-
 			movieRepository.save(movie);
 
 
 			//inverted index sync
+            //put words from movie title into Map with key=indexValue
 			List<String> words= Arrays.asList(movie.getName().split(" "));
 			for(String word:words){
 				word=word.toLowerCase();
-				Set<Long> value=temp.get(word);
+				Set<Long> value=tempInvertedIndex.get(word);
 
 				try {
 					value.add(movie.getId());
-					temp.put(word, value);
+					tempInvertedIndex.put(word, value);
 				}
 				catch(Exception e){
 					value=new HashSet<>();
 					value.add(movie.getId());
-					temp.put(word, value);
+					tempInvertedIndex.put(word, value);
 				}
 			}
 
 		}
 
-
+		//loop through Completed Map and create InvertedMovieIndex Entity
 		//https://stackoverflow.com/questions/1066589/iterate-through-a-hashmap
-		for (Map.Entry<String, Set<Long>> entry : temp.entrySet()) {
-			InvertedMovieIndex temp2=new InvertedMovieIndex();
+		for (Map.Entry<String, Set<Long>> entry : tempInvertedIndex.entrySet()) {
+			InvertedMovieIndex invertedIndex=new InvertedMovieIndex();
 			String key = entry.getKey();
 			Set<Long> value = entry.getValue();
-			temp2.setKey(key);
-			temp2.setIndex(value);
+			invertedIndex.setKey(key);
+			invertedIndex.setIndex(value);
 
 
 
-			invertedMovieIndexRepository.save(temp2);
+			invertedMovieIndexRepository.save(invertedIndex);
 
 		}
 
